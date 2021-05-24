@@ -2,24 +2,21 @@ extends KinematicBody2D
 
 
 var player = null
-const SPEED = 200
+var velocity = Vector2.ZERO
+var speed = 50
 
 func _physics_process(delta):
+	velocity = Vector2.ZERO
 	if player:
-		var player_direction = (player.position - self.position).normalized()
-		move_and_slide(SPEED * player_direction)
+		velocity = position.direction_to(player.position) * speed
+	velocity = move_and_slide(velocity)
 
+# Attack Mode
 func _on_Area2D_area_entered(area):
-	queue_free()
-# body isn't declared in the current scope
-#	if body.name == "Player":
-#		$AnimatedSprite.play("attack")
-#		player = body
+	player = area
+	$AnimatedSprite.play("attack")
 
-
+# Go Back To Default
 func _on_Area2D_area_exited(area):
-	queue_free()
-# body isn't declared in the current scope
-#	if body.name == "Player":
-#		$AnimatedSprite.play("default")
-#		player = body
+	player = null
+	$AnimatedSprite.play("default")
